@@ -1,6 +1,6 @@
 all:
 	make clean
-	gcc -I./include src/proxyserver.c
+	g++ -I./include src/proxyserver.cpp -o bin/runserver
 
 clean:
-	rm -f *.out
+	rm -f bin/*

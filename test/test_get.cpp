@@ -1,6 +1,9 @@
 #include "headers.h"
 
+using namespace std;
+
 int main(int argc,char* argv[]) {
-	printf("\n\nYAHS: Yet Another HTTP-proxy Server\n\n");
+	cout << "\n\nTesting HTTP GET\n\n";
 	return 0;
 }
+
