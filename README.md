@@ -1,6 +1,7 @@
 **YAHS** Yet Another HTTP-proxy Server
 
-#Steps to run
+# Steps to run #
+
 1) ``` make all ```
 
 2) ``` ./runproxyserver.sh PORT ``` <br>
@@ -11,5 +12,5 @@
 
 
 # Contributors
-Rishabh Bhardwaj <br />
-Devendra K Meena
+* Rishabh Bhardwaj
+* Devendra K Meena
