@@ -11,5 +11,5 @@
 
 
 # Contributors
-Rishabh Bhardwaj
+Rishabh Bhardwaj <br />
 Devendra K Meena
