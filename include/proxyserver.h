@@ -9,8 +9,8 @@ public:
 	unsigned int addresslength;
 
 	void runServer(int);
-	void httpGET();
-	void httpPOST();
-	void httpHEAD();
+	void httpGET(char buffer[510], char *url, char *method, char *v_http);
+	void httpPOST(char buffer[510], char *url, char *method, char *v_http);
+	void httpHEAD(char buffer[510], char *url, char *method, char *v_http);
 	void acceptRequest();
 };
