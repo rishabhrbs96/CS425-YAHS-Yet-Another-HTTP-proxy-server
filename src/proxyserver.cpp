@@ -34,6 +34,39 @@ void HTTPServer::runServer(int port) {
 		exit(1);
 	}
 
+
+	// dev's code start //
+
+int pid;
+static int counter=0;
+for(;;)
+	{
+		if((clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, (socklen_t*)&addresslength))<0) {
+			printf("Problem in accepting connection");
+			exit(1);	
+		}
+
+		if((pid = fork()) == -1){
+			close(clientSocket);
+			continue;
+		}
+		else if(pid > 0){
+			close(clientSocket);
+			continue;
+		}
+		else if(pid==0){
+		
+		    std::cout << "DEBUG: process " << ::getpid() << " (parent: " << ::getppid() << ")" << std::endl;
+			acceptRequest();
+
+		// close(clientSocket);
+		}
+
+	}
+
+
+	// dev's code end //
+
 	acceptRequest();
 	close(serverSocket);
 
@@ -45,10 +78,10 @@ void HTTPServer::acceptRequest() {
 		char httprequest[510],buffer[510];
 		char *ts, *method, *url, *v_http;
 
-		if((clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, (socklen_t*)&addresslength))<0) {
-			printf("Problem in accepting connection");
-			exit(1);	
-		}
+		// if((clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, (socklen_t*)&addresslength))<0) {
+		// 	printf("Problem in accepting connection");
+		// 	exit(1);	
+		// }
 		
 		bzero((char*)httprequest,500);
 		recv(clientSocket,httprequest,500,0);
