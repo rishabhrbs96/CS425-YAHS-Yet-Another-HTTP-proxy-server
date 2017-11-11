@@ -7,6 +7,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <signal.h>
+#include <vector>
 
 #include <arpa/inet.h>
 #include <netinet/in.h>

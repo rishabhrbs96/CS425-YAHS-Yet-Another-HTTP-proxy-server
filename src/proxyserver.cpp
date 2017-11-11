@@ -5,7 +5,7 @@ using namespace std;
 
 #define MAX_ALLOWED_CONNECTIONS 100
 
-void HTTPServer::runServer(int port) {
+void HTTPServer::runServer(int port, int argc, char **argv) {
 	cout << "\n\ncreating server\n\n";
 
 	bzero((char *)&serevAddress, sizeof(serevAddress));
@@ -28,6 +28,13 @@ void HTTPServer::runServer(int port) {
 		printf("Failed to bind\n");
 		exit(1);
 	}
+
+	// To handle SIGINT signals
+	signal(SIGINT, SIG_IGN);
+
+	// Initialising the number of filtered requests 
+	countFiltered = 0;
+	for(int i=0;i<argc-2;i++)	filteringDomains.push_back(string(argv[2+i]));
 
 	if(listen(serverSocket, MAX_ALLOWED_CONNECTIONS) < 0) {
 		printf("Failed to listen\n");
@@ -59,7 +66,13 @@ void HTTPServer::acceptRequest() {
 		ts = strtok(httprequest," ");
 		method = ts;
 		ts = strtok(NULL," ");
+
 		url = ts;
+		if(filterURL(url) == false){
+			countFiltered++;
+			continue;
+		}
+
 		ts = strtok(NULL,"\n");
 		v_http = ts;
 		
@@ -459,9 +472,25 @@ void HTTPServer::httpHEAD(char buffer[510], char *url, char *method, char *v_htt
 		}
 }
 
+
+bool HTTPServer::filterURL(char *url){
+	int siz = filteringDomains.size();
+	bool flag=true; 
+
+	string str(url);
+	for(int i=0;i<siz;i++){
+		size_t pos = str.find(filteringDomains[i]);
+		if(pos != string::npos){
+			flag=false;
+			break;
+		}
+	}
+	return flag;
+}
+
 int main(int argc,char* argv[]) {
 	cout << "\n\nYAHS: Yet Another HTTP-proxy Server\n\n";
 	HTTPServer httpServer;
-	httpServer.runServer(atoi(argv[1]));
+	httpServer.runServer(atoi(argv[1]), argc, argv);
 	return 0;
 }
