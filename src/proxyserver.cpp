@@ -203,6 +203,11 @@ void HTTPServer::httpGET(char buffer[2048], char *url, char *method, char *v_htt
 	url = strtok(url,"/");
 
 	host = gethostbyname(url);
+	if(host == 0) {
+		countError[0]++;
+		send(clientSocket,"<html><head>404 Not Found</head><body><h1>HTTP Error: 404 Not Found</h1><p>The requested url was not found.</p></body></html>",125,0);
+		return;
+	}
 
 	bzero((char*)&host_addr,sizeof(host_addr));
 	host_addr.sin_port = htons(port);
@@ -213,8 +218,8 @@ void HTTPServer::httpGET(char buffer[2048], char *url, char *method, char *v_htt
 	newhostSocket = connect(hostSocket,(struct sockaddr*)&host_addr,sizeof(struct sockaddr));
 	
 	if(newhostSocket<0) {
-		printf("Error in connecting to remote server");
 		countError[0]++;
+		send(clientSocket,"<html><head>404 Not Found</head><body><h1>HTTP Error: 404 Not Found</h1><p>The requested url was not found.</p></body></html>",125,0);
 		return;
 	}
 	
@@ -228,8 +233,8 @@ void HTTPServer::httpGET(char buffer[2048], char *url, char *method, char *v_htt
 
 	n = send(hostSocket,buffer,strlen(buffer),0);
 	if(n<0) {
-		printf("Error writing to socket");
 		countError[0]++;
+		send(clientSocket,"<html><head>520 Unknown Error</head><body><h1>HTTP Error: 520 Unknown Error</h1><p>The server is returning unknown error.</p></body></html>",139,0);
 	}
 	else {
 		do {
@@ -260,7 +265,11 @@ void HTTPServer::httpPOST(char buffer[2048], char *url, char *method, char *v_ht
 	url = strtok(url,"/");
 
 	host = gethostbyname(url);
-
+	if(host == 0) {
+		countError[0]++;
+		send(clientSocket,"<html><head>404 Not Found</head><body><h1>HTTP Error: 404 Not Found</h1><p>The requested url was not found.</p></body></html>",125,0);
+		return;
+	}
 	
 	bzero((char*)&host_addr,sizeof(host_addr));
 	host_addr.sin_port=htons(port);
@@ -270,8 +279,8 @@ void HTTPServer::httpPOST(char buffer[2048], char *url, char *method, char *v_ht
 	hostSocket = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
 	newhostSocket = connect(hostSocket,(struct sockaddr*)&host_addr,sizeof(struct sockaddr));
 	if(newhostSocket<0) {
-		printf("Error in connecting to remote server");
 		countError[0]++;
+		send(clientSocket,"<html><head>404 Not Found</head><body><h1>HTTP Error: 404 Not Found</h1><p>The requested url was not found.</p></body></html>",125,0);
 		return;
 	}
 
@@ -287,8 +296,8 @@ void HTTPServer::httpPOST(char buffer[2048], char *url, char *method, char *v_ht
 	n = send(hostSocket,buffer,strlen(buffer),0);
 		
 	if(n<0) {
-		printf("Error writing to socket");
 		countError[0]++;
+		send(clientSocket,"<html><head>520 Unknown Error</head><body><h1>HTTP Error: 520 Unknown Error</h1><p>The server is returning unknown error.</p></body></html>",139,0);
 	}
 	else {
 		do {
@@ -319,6 +328,11 @@ void HTTPServer::httpHEAD(char buffer[2048], char *url, char *method, char *v_ht
 	url = strtok(url,"/");
 
 	host = gethostbyname(url);
+	if(host == 0) {
+		countError[0]++;
+		send(clientSocket,"<html><head>404 Not Found</head><body><h1>HTTP Error: 404 Not Found</h1><p>The requested url was not found.</p></body></html>",125,0);
+		return;
+	}
 
 	bzero((char*)&host_addr,sizeof(host_addr));
 	host_addr.sin_port = htons(port);
@@ -329,8 +343,8 @@ void HTTPServer::httpHEAD(char buffer[2048], char *url, char *method, char *v_ht
 	newhostSocket = connect(hostSocket,(struct sockaddr*)&host_addr,sizeof(struct sockaddr));
 	
 	if(newhostSocket<0) {
-		printf("Error in connecting to remote server");
 		countError[0]++;
+		send(clientSocket,"<html><head>404 Not Found</head><body><h1>HTTP Error: 404 Not Found</h1><p>The requested url was not found.</p></body></html>",125,0);
 		return;
 	}
 	
@@ -345,8 +359,8 @@ void HTTPServer::httpHEAD(char buffer[2048], char *url, char *method, char *v_ht
 	n = send(hostSocket,buffer,strlen(buffer),0);
 	
 	if(n<0) {
-		printf("Error writing to socket");
 		countError[0]++;
+		send(clientSocket,"<html><head>520 Unknown Error</head><body><h1>HTTP Error: 520 Unknown Error</h1><p>The server is returning unknown error.</p></body></html>",139,0);
 	}
 	else {
 		do {
