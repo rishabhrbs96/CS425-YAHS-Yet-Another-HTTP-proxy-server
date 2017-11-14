@@ -3,6 +3,7 @@
 int *countProcessed = (int *)mmap(0, sizeof(int), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
 int *countFiltered = (int *)mmap(0, sizeof(int), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
 int *countError = (int *)mmap(0, sizeof(int), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+int serverSocket, clientSocket;
 
 class HTTPServer {
 private:
@@ -11,7 +12,6 @@ private:
 
 public:
 	struct sockaddr_in clientAddress, serevAddress;
-	int serverSocket, clientSocket;
 	unsigned int addresslength;
 
 	void runServer(int, int, char**);

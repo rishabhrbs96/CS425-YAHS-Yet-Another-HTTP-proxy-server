@@ -8,6 +8,8 @@ using namespace std;
 extern int *countProcessed;
 extern int *countFiltered;
 extern int *countError;
+extern int serverSocket;
+extern int clientSocket;
 
 HTTPServer httpServer;
 vector <int> procid;
@@ -19,8 +21,12 @@ void handle_sigusr1(int signum)  {
 
 void handle_sigusr2(int signum)  {
 	printf("Received SIGUSR2\n");
-	for(vector <int> :: reverse_iterator it = procid.rbegin(); it != procid.rend(); it++)
-		kill(*it,SIGKILL);
+	close(serverSocket);
+	close(clientSocket);
+	for(vector <int> :: reverse_iterator it = procid.rbegin(); it != procid.rend(); it++) {
+		cout << "in for loop " << endl;
+		kill(*it,SIGTERM);sleep(100);kill(*it,SIGKILL);	
+	}
 }
 
 void HTTPServer::printStats() {
@@ -49,10 +55,10 @@ void HTTPServer::runServer(int port, int argc, char **argv) {
 	cout << "Server process running on pid : " << getpid() << endl;
 	
 	struct sigaction psa1,psa2;
-	psa1.sa_handler = handle_sigusr1;
-	psa2.sa_handler = handle_sigusr2;
-	sigaction(SIGUSR1, &psa1, NULL);
-	sigaction(SIGUSR2, &psa2, NULL);
+	// psa1.sa_handler = handle_sigusr1;
+	// psa2.sa_handler = handle_sigusr2;
+	// sigaction(SIGUSR1, &psa1, NULL);
+	// sigaction(SIGUSR2, &psa2, NULL);
 	
 	procid.push_back(getpid());
 	
@@ -109,6 +115,10 @@ void HTTPServer::runServer(int port, int argc, char **argv) {
 		}
 		else if(pid==0) {
 			procid.push_back(getpid());
+			psa1.sa_handler = handle_sigusr1;
+			psa2.sa_handler = handle_sigusr2;
+			sigaction(SIGUSR1, &psa1, NULL);
+			sigaction(SIGUSR2, &psa2, NULL);
 			acceptRequest();
 			close(clientSocket);
 			//procid.erase(remove(procid.begin(), procid.end(), pid), procid.end());
