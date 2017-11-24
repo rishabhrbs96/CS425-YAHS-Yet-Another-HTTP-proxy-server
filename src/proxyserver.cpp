@@ -22,10 +22,10 @@ void handle_sigusr1(int signum)  {
 
 void handle_sigusr2(int signum)  {
 	printf("Received SIGUSR2\n");
+	close(serverSocket);
 	for(int i = procid_size[0]-1; i > 0; --i) {
 		kill(procid[i],SIGKILL);
 	}
-	close(serverSocket);
 	kill(procid[0],SIGKILL);
 }
 
